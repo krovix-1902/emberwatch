@@ -92,16 +92,22 @@ output.
 ## Layout
 
 ```
-pipeline/schema.py      both sensors into one table
-pipeline/grid.py        gridding, cell-days, area rollups
-pipeline/calibrate.py   FRP floor, overlap ratios, harmonised series
-pipeline/stats.py       climatology, percentile anomalies, seasonal Mann-Kendall, seam test
-pipeline/current.py     like-for-like month-to-date comparison
-pipeline/build.py       orchestrator, writes the site JSON
-pipeline/synth.py       synthetic FIRMS data for development
-site/index.html         the whole front end, no build step
-tools/smoke.mjs         front-end smoke test
+pipeline/schema.py       both sensors into one table
+pipeline/grid.py         gridding, cell-days, area rollups
+pipeline/calibrate.py    FRP floor, overlap ratios, harmonised series
+pipeline/stats.py        climatology, percentile anomalies, seasonal Mann-Kendall, seam test
+pipeline/current.py      like-for-like month-to-date comparison
+pipeline/export_grid.py  sparse per-cell export so the browser can answer any drawn area
+pipeline/fetch_firms.py  resumable FIRMS area-API puller with retry and backoff
+pipeline/build.py        orchestrator, writes the site JSON
+pipeline/synth.py        synthetic FIRMS data for development
+site/index.html          the whole front end, no build step
+tools/smoke.mjs          front-end test: runs the page in jsdom against the real JSON
 ```
+
+Draw any box on the map and the calendar, anomalies, trend test and seam test are all
+recomputed in the browser from the per-cell export. There is no backend to fall over.
+Coastline geometry is Natural Earth, via the `world-atlas` package.
 
 The front end is static and self-contained on purpose: everything is precomputed, so there
 is no backend to fall over.
