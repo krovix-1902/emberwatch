@@ -112,8 +112,8 @@ Coastline geometry is Natural Earth, via the `world-atlas` package.
 The front end is static and self-contained on purpose: everything is precomputed, so there
 is no backend to fall over.
 
-Colour ramp is **cividis**, which is perceptually uniform and stays readable with colour
-vision deficiency. Anomaly states are never encoded as red against green.
+Colour ramp is a single-hue ember scale with strictly monotonic luminance, which stays
+readable with colour vision deficiency. Anomaly states are never encoded as red against green.
 
 ## Data
 
