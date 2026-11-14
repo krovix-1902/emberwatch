@@ -1,0 +1,63 @@
+{
+ "generated": "2026-11-14",
+ "synthetic": true,
+ "detections": 124669,
+ "grid_deg": 0.25,
+ "frp_floor_mw": 8.4,
+ "overlap_years": [
+  2013,
+  2025
+ ],
+ "global_ratio": 1.0,
+ "coverage": [
+  {
+   "sensor": "MODIS",
+   "first_day": "2000-11-01",
+   "last_day": "2026-11-14",
+   "detections": 22739,
+   "platforms": 2
+  },
+  {
+   "sensor": "VIIRS",
+   "first_day": "2012-01-21",
+   "last_day": "2026-11-14",
+   "detections": 101930,
+   "platforms": 3
+  }
+ ],
+ "areas": [
+  {
+   "key": "punjab",
+   "label": "Punjab and Haryana, India",
+   "note": "Post-monsoon crop residue burning",
+   "bbox": [
+    73.8,
+    29.5,
+    77.5,
+    32.5
+   ]
+  },
+  {
+   "key": "portugal",
+   "label": "Central Portugal",
+   "note": "Mediterranean wildfire regime",
+   "bbox": [
+    -9.0,
+    39.0,
+    -6.8,
+    41.0
+   ]
+  },
+  {
+   "key": "highlands",
+   "label": "Scottish Highlands",
+   "note": "Sparse northern moorland burning",
+   "bbox": [
+    -5.5,
+    56.3,
+    -3.0,
+    58.0
+   ]
+  }
+ ]
+}
