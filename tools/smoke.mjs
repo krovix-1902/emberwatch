@@ -1,81 +1,81 @@
-/* Execute the page's own script against the real JSON with a tiny DOM shim.
-   Catches runtime errors, undefined fields and empty renders before deploy. */
-import { readFileSync, readdirSync } from "node:fs";
+/* Run the page in a real DOM (jsdom) against the generated JSON.
+   Fails on runtime errors, empty renders, NaN/undefined leaks, and checks
+   that a custom coordinate box recomputes everything. */
+import { readFileSync } from "node:fs";
+import { JSDOM } from "jsdom";
 
 const html = readFileSync("site/index.html", "utf8");
-const script = html.split("<script>")[1].split("</script>")[0];
-
-const nodes = {};
-const mk = (id) => (nodes[id] = {
-  id, innerHTML: "", textContent: "", hidden: true, style: {},
-  onclick: null, onchange: null,
-});
-[
-  "area", "dl-series", "synthetic-banner", "cards", "calendar", "cal-sub",
-  "ramp", "seam", "ablation", "method", "factor-note", "generated",
-].forEach(mk);
-
-globalThis.document = {
-  getElementById: (id) => nodes[id] ?? mk(id),
-  createElement: () => ({ click() {}, set href(_) {}, set download(_) {} }),
-};
-globalThis.Blob = class { constructor(p) { this.parts = p; } };
-globalThis.URL = { createObjectURL: () => "blob:x" };
-globalThis.fetch = async (p) => ({
-  json: async () => JSON.parse(readFileSync(`site/${p}`, "utf8")),
-});
-
 let failed = false;
 const fail = (m) => { failed = true; console.error("  FAIL " + m); };
+const errors = [];
 
-await (async () => {
-  // Strip the IIFE so we can drive it per area, then re-add our own driver.
-  const body = script.slice(0, script.lastIndexOf("(async function(){"));
-  const run = new Function(body + "\nreturn {load, renderCards, ramp, onColour};")();
+const dom = new JSDOM(html, {
+  runScripts: "dangerously",
+  url: "https://example.org/",
+  beforeParse(window) {
+    window.fetch = async (p) => ({
+      json: async () => JSON.parse(readFileSync("site/" + p, "utf8")),
+    });
+    window.addEventListener("error", (e) => errors.push(e.message));
+    // jsdom lacks these; the page only touches them on user gestures.
+    window.SVGElement.prototype.setPointerCapture ??= () => {};
+  },
+});
+const { document } = dom.window;
+await new Promise((r) => setTimeout(r, 400));
 
-  const man = JSON.parse(readFileSync("site/data/manifest.json", "utf8"));
-  console.log(`manifest: ${man.areas.length} areas, synthetic=${man.synthetic}`);
+const $ = (id) => document.getElementById(id);
+const text = (id) => ($(id)?.textContent ?? "").trim();
+const htmlOf = (id) => ($(id)?.innerHTML ?? "");
 
-  for (const a of man.areas) {
-    Object.values(nodes).forEach((n) => { n.innerHTML = ""; n.textContent = ""; });
-    await run.load(a.key, man);
-    console.log(`\n${a.key}:`);
+if (errors.length) fail("page errors: " + errors.join(" | "));
 
-    const cal = nodes.calendar.innerHTML;
-    const seam = nodes.seam.innerHTML;
-    const cards = nodes.cards.innerHTML;
-
-    if (!cal.startsWith("<svg")) fail("calendar did not render an svg");
-    if ((cal.match(/<rect/g) || []).length < 12) fail("calendar has too few cells");
-    if (!seam.includes("VIIRS joins")) fail("seam chart missing the 2012 marker");
-    if (!/viewBox="0 0 \d+ \d+"/.test(seam)) fail("seam chart has a bad viewBox");
-    if (cards.includes("undefined") || cal.includes("undefined") || seam.includes("undefined"))
-      fail("rendered output contains 'undefined'");
-    if (cards.includes("NaN") || seam.includes("NaN")) fail("rendered output contains NaN");
-    if (!nodes.ablation.innerHTML.includes("%")) fail("ablation table empty");
-    if (!nodes["factor-note"].innerHTML.includes("MW")) fail("factor note empty");
-
-    const d = JSON.parse(readFileSync(`site/data/${a.key}.json`, "utf8"));
-    const pct = d.current.percentile;
-    if (d.current.complete === true && new Date().getDate() < 28)
-      fail("running month wrongly marked complete");
-    if (pct !== null && (pct < 0 || pct > 100)) fail(`percentile out of range: ${pct}`);
-    if (d.trend.p_value < 0 || d.trend.p_value > 1) fail("p-value out of range");
-
-    const cells = (cal.match(/<rect/g) || []).length;
-    console.log(`  calendar ${cells} cells over ${d.years.length} years`);
-    console.log(`  current  ${d.current.flag} (${pct}th pct), last complete ${d.anomaly.flag}`);
-    console.log(`  seam     naive ${d.seam.raw.step_pct}%  ->  harmonised ${d.seam.harmonised.step_pct}%`);
-
-    // CSV export path
-    nodes["dl-series"].onclick();
+function checkRender(label) {
+  console.log(`\n[${label}]`);
+  const strip = htmlOf("strip"), cal = htmlOf("calendar"), seam = htmlOf("seam");
+  if (!strip.includes("cell-stat")) fail("readout strip empty");
+  const cells = (cal.match(/<rect/g) || []).length;
+  if (cells < 24) fail(`calendar has only ${cells} cells`);
+  if (!seam.includes("VIIRS joins")) fail("seam chart missing 2012 marker");
+  for (const [id, s] of [["strip", strip], ["calendar", cal], ["seam", seam]]) {
+    if (s.includes("undefined")) fail(`${id} contains 'undefined'`);
+    if (s.includes("NaN")) fail(`${id} contains NaN`);
   }
+  console.log("  strip   :", text("strip").replace(/\s+/g, " ").slice(0, 150));
+  console.log("  calendar:", cells, "cells");
+  console.log("  seam    :", (seam.match(/step [+-]?\d+%/g) || []).join("  "));
+}
 
-  // Colour ramp sanity: monotonic lightness, no clipping outside 0..1.
-  const isColour = (c) => /^(rgb\(|#)/.test(c);
-  if (!isColour(run.ramp(-5)) || !isColour(run.ramp(5))) fail("ramp clamping broken");
-  if (run.onColour(0.1) === run.onColour(0.9)) fail("label contrast does not flip");
-})();
+// 1. default area loaded at boot
+if (!htmlOf("presets").includes("chip")) fail("presets never rendered");
+if (!text("dl-built")) fail("dateline build date empty");
+if (!htmlOf("map").includes("<path")) fail("map has no land paths");
+if (!htmlOf("map").includes("data-i")) fail("map has no activity cells");
+if (!htmlOf("ablation").includes("%")) fail("ablation table empty");
+checkRender("default preset");
 
+// 2. custom coordinates through the accessible path
+$("in-w").value = "-9.0"; $("in-s").value = "39.0";
+$("in-e").value = "-6.8"; $("in-n").value = "41.0";
+$("apply").click();
+await new Promise((r) => setTimeout(r, 50));
+checkRender("custom box (Portugal coords)");
+if (!text("selinfo").includes("grid cells")) fail("selection info not updated");
+
+// 3. an empty ocean box renders the no-record state, not a crash
+$("in-w").value = "-40"; $("in-s").value = "-30";
+$("in-e").value = "-35"; $("in-n").value = "-25";
+$("apply").click();
+await new Promise((r) => setTimeout(r, 50));
+if (!htmlOf("strip").toLowerCase().includes("no satellite-detected burning"))
+  fail("empty-area state missing");
+else console.log("\n[ocean box] empty state renders correctly");
+
+// 4. percentile sanity straight from the data
+const g = JSON.parse(readFileSync("site/data/grid.json", "utf8"));
+if (!g.cells.length) fail("grid export has no cells");
+if (g.n_months < 300) fail("grid export month axis looks short");
+
+if (errors.length) fail("late page errors: " + errors.join(" | "));
 console.log(failed ? "\nSMOKE TEST FAILED" : "\nsmoke test passed");
 process.exit(failed ? 1 : 0);

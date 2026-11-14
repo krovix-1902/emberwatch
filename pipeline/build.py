@@ -16,7 +16,7 @@ from datetime import date
 
 import duckdb
 
-from . import calibrate, current, grid, schema, stats
+from . import calibrate, current, export_grid, grid, schema, stats
 
 AREAS = {
     "punjab": {
@@ -107,6 +107,16 @@ def ablation(con, bbox, grid_deg: float, floor: float) -> list[dict]:
 
     grid.build_cell_days(con, grid_deg=grid_deg, frp_floor=None)
     grid.monthly(con)
+    # Keep the unfloored, unharmonised record: it is what a naive user of
+    # FIRMS would plot, and the seam chart needs it as the control.
+    con.execute("DROP TABLE IF EXISTS monthly_unfloored")
+    con.execute(
+        """
+        CREATE TABLE monthly_unfloored AS
+        SELECT cell_y, cell_x, yr, mo, sum(detections) AS detections
+        FROM monthly_raw GROUP BY 1, 2, 3, 4
+        """
+    )
     rows = grid.area_monthly(con, bbox, grid_deg)
     naive_unfloored = naive_splice(rows)
     seam = stats.seam_test(naive_unfloored, naive_unfloored)["raw"]
@@ -223,6 +233,13 @@ def run(raw_dir: str, out_dir: str, areas: list[str], grid_deg: float) -> dict:
         manifest["areas"].append(
             {"key": key, "label": spec["label"], "note": spec["note"], "bbox": bbox}
         )
+
+    manifest["ablation"] = abl
+    manifest["ablation_area"] = AREAS[areas[0]]["label"]
+    gridinfo = export_grid.export(
+        con, os.path.join(out_dir, "grid.json"), grid_deg
+    )
+    manifest["grid"] = gridinfo
 
     with open(os.path.join(out_dir, "manifest.json"), "w") as fh:
         json.dump(manifest, fh, indent=1)

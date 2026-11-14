@@ -4,279 +4,618 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>EmberWatch — one fire record, 25 years, no sensor seams</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --ink:#15181d; --muted:#5b6472; --line:#d8dde5; --bg:#fbfcfd; --panel:#fff;
-  --accent:#1a4fa0; --warn:#8a5a00; --extreme:#8c2d12;
-  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --paper:#f6f3ec; --panel:#fbf9f4; --ink:#1c1a15; --muted:#6f6a5e;
+  --hair:#d9d3c5; --hair2:#b9b2a2; --ember:#b3421a; --water:#e9e5d9;
+  --good:#3e5f2a;
+  --serif:"Instrument Serif",Georgia,serif;
+  --sans:"IBM Plex Sans",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);
-  font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;}
-.wrap{max-width:1080px;margin:0 auto;padding:0 20px 72px}
-header{border-bottom:1px solid var(--line);background:var(--panel);margin-bottom:28px}
-header .wrap{padding-top:26px;padding-bottom:22px}
-h1{font-size:25px;margin:0 0 4px;letter-spacing:-.01em}
-h1 span{color:var(--accent)}
-.tag{color:var(--muted);margin:0 0 18px;font-size:15px}
-h2{font-size:18px;margin:38px 0 6px;letter-spacing:-.01em}
-h2:first-child{margin-top:0}
-.sub{color:var(--muted);font-size:14px;margin:0 0 14px;max-width:70ch}
-.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-label{font-size:13px;color:var(--muted);font-weight:600}
-select,button{font:inherit;font-size:14px;padding:8px 11px;border:1px solid var(--line);
-  border-radius:7px;background:var(--panel);color:var(--ink);cursor:pointer}
-select:focus-visible,button:focus-visible,[tabindex]:focus-visible{
-  outline:3px solid var(--accent);outline-offset:2px}
-button:hover{border-color:var(--accent)}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));gap:14px;margin:4px 0 8px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:15px 16px}
-.card h3{margin:0 0 7px;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
-.big{font-size:26px;font-weight:650;letter-spacing:-.02em;line-height:1.15}
-.card p{margin:6px 0 0;font-size:13.5px;color:var(--muted)}
-.flag{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:650;
-  border:1.5px solid currentColor;margin-top:9px}
-.f-normal{color:var(--muted)} .f-elevated{color:var(--warn)} .f-extreme{color:var(--extreme)}
-.f-quiet{color:var(--accent)}
-.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px;overflow-x:auto}
-table{border-collapse:collapse;width:100%;font-size:14px}
-th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
-th{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:650}
-td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--mono)}
-.legend{display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--muted);margin-top:12px;flex-wrap:wrap}
-.ramp{height:11px;width:190px;border-radius:3px;border:1px solid var(--line)}
-.note{font-size:13.5px;color:var(--muted);max-width:74ch}
-.note strong{color:var(--ink)}
-ul.lim{font-size:14px;color:var(--muted);max-width:74ch;padding-left:19px}
-ul.lim li{margin:5px 0}
-.pill{font-family:var(--mono);font-size:12px;background:#eef1f6;border-radius:5px;padding:2px 6px;color:var(--muted)}
-.banner{background:#fff6e5;border:1px solid #e8c983;border-radius:9px;padding:11px 14px;
-  font-size:13.5px;color:#6b4e12;margin-bottom:20px}
-footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
-a{color:var(--accent)}
-.cal text{font-size:11px;fill:var(--muted)}
-.cal rect:focus{outline:2px solid var(--accent)}
+html{background:var(--paper)}
+body{margin:0;color:var(--ink);font:15px/1.6 var(--sans);
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:1060px;margin:0 auto;padding:0 22px}
+
+/* ---- masthead ---- */
+.mast{padding:34px 0 0}
+.mast .rule{border-top:1px solid var(--ink)}
+.mast h1{font-family:var(--serif);font-weight:400;font-size:64px;line-height:1.02;
+  margin:14px 0 6px;letter-spacing:-.01em}
+.mast h1 em{font-style:italic;color:var(--ember)}
+.mast .strap{font-family:var(--serif);font-size:23px;font-style:italic;
+  color:var(--muted);margin:0 0 16px}
+.dateline{display:flex;flex-wrap:wrap;gap:6px 22px;padding:9px 0 10px;
+  border-top:1px solid var(--ink);border-bottom:3px double var(--ink);
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;
+  text-transform:uppercase;color:var(--muted)}
+.dateline b{color:var(--ink);font-weight:500}
+.stamp{display:inline-block;margin:18px 0 0;padding:5px 12px;border:2px solid var(--ember);
+  color:var(--ember);font-family:var(--mono);font-size:11.5px;font-weight:500;
+  letter-spacing:.14em;text-transform:uppercase;transform:rotate(-1.2deg)}
+
+/* ---- sections ---- */
+section{margin:46px 0 0}
+.sec-head{display:flex;align-items:baseline;gap:14px;border-bottom:1px solid var(--ink);
+  padding-bottom:6px;margin-bottom:16px}
+.sec-head .no{font-family:var(--mono);font-size:12px;color:var(--ember);letter-spacing:.1em}
+.sec-head h2{font-family:var(--serif);font-weight:400;font-size:27px;margin:0}
+.sec-head .aside{margin-left:auto;color:var(--muted);font-style:italic;
+  font-family:var(--serif);font-size:15px;text-align:right}
+.lede{max-width:66ch;color:var(--muted);margin:0 0 16px;font-size:14.5px}
+.lede b{color:var(--ink);font-weight:600}
+
+/* ---- map ---- */
+.map-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 10px}
+.chip{font:12.5px/1 var(--mono);letter-spacing:.02em;padding:8px 13px;cursor:pointer;
+  border:1px solid var(--hair2);background:var(--panel);color:var(--ink);border-radius:999px}
+.chip:hover{border-color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.map-tools .sp{flex:1}
+.coords{display:flex;gap:6px;align-items:center;font-family:var(--mono);font-size:12px;flex-wrap:wrap}
+.coords input{width:66px;font:12px var(--mono);padding:7px 6px;border:1px solid var(--hair2);
+  background:var(--panel);color:var(--ink);border-radius:4px}
+.coords button{font:12px var(--mono);padding:7px 11px;border:1px solid var(--ink);
+  background:var(--ink);color:var(--paper);border-radius:4px;cursor:pointer}
+.mapbox{position:relative;border:1px solid var(--ink);background:var(--water);
+  box-shadow:4px 4px 0 var(--hair)}
+.mapbox svg{display:block;width:100%;height:auto;cursor:crosshair;touch-action:none}
+.map-foot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  font-family:var(--mono);font-size:11.5px;color:var(--muted);padding:8px 2px 0}
+#tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--paper);
+  font:11.5px var(--mono);padding:5px 9px;border-radius:3px;transform:translate(-50%,-130%);
+  white-space:nowrap;display:none;z-index:3}
+.hint{font-family:var(--serif);font-style:italic;font-size:15px;color:var(--muted)}
+
+/* ---- readout strip ---- */
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  border-top:1px solid var(--ink);border-bottom:1px solid var(--ink)}
+.cell-stat{padding:16px 20px 18px;border-left:1px solid var(--hair)}
+.cell-stat:first-child{border-left:none;padding-left:2px}
+.cell-stat .k{font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.cell-stat .v{font-family:var(--mono);font-size:33px;font-weight:500;line-height:1.05;
+  letter-spacing:-.02em}
+.cell-stat .v small{font-size:15px;color:var(--muted);font-weight:400}
+.cell-stat .d{font-size:13px;color:var(--muted);margin-top:7px;max-width:36ch}
+.badge{display:inline-block;margin-top:9px;font-family:var(--mono);font-size:11px;
+  letter-spacing:.07em;text-transform:uppercase;padding:3px 9px;border:1.5px solid currentColor;
+  border-radius:2px}
+.b-warn{color:var(--ember)} .b-ok{color:var(--good)} .b-mut{color:var(--muted)}
+
+/* ---- panels / charts ---- */
+.panel{border:1px solid var(--ink);background:var(--panel);padding:18px;
+  box-shadow:4px 4px 0 var(--hair)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+@media(max-width:820px){.cols{grid-template-columns:1fr}}
+.legend{display:flex;align-items:center;gap:10px;margin-top:12px;
+  font-family:var(--mono);font-size:11px;color:var(--muted);flex-wrap:wrap}
+.ramp{height:10px;width:170px;border:1px solid var(--hair2)}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--muted);font-weight:500;text-align:left;padding:7px 10px;
+  border-bottom:1px solid var(--ink)}
+td{padding:9px 10px;border-bottom:1px solid var(--hair)}
+td.num,th.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+tr.hero td{font-weight:600;background:#f2ede1}
+
+/* ---- method ---- */
+.steps{display:grid;grid-template-columns:1fr 1fr;gap:4px 34px;counter-reset:st;margin:0;padding:0}
+@media(max-width:820px){.steps{grid-template-columns:1fr}}
+.steps li{list-style:none;position:relative;padding:12px 0 12px 44px;border-top:1px solid var(--hair)}
+.steps li::before{counter-increment:st;content:counter(st,decimal-leading-zero);
+  position:absolute;left:0;top:14px;font-family:var(--mono);font-size:12px;color:var(--ember)}
+.steps b{display:block;font-weight:600;margin-bottom:2px}
+.steps p{margin:0;font-size:13.5px;color:var(--muted)}
+.margin-note{border-left:3px solid var(--ember);padding:4px 0 4px 16px;max-width:62ch;
+  font-family:var(--serif);font-size:16.5px;font-style:italic;color:var(--ink)}
+ul.lim{margin:14px 0 0;padding-left:20px;max-width:70ch;font-size:13.5px;color:var(--muted)}
+ul.lim li{margin:7px 0}
+ul.lim b{color:var(--ink)}
+
+/* ---- footer ---- */
+footer{margin:58px 0 0;border-top:3px double var(--ink);padding:16px 0 46px;
+  display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;
+  font-size:12.5px;color:var(--muted)}
+footer a{color:var(--ink)}
+.sig{font-family:var(--serif);font-style:italic;font-size:16px;color:var(--ink)}
+button:focus-visible,input:focus-visible,[tabindex]:focus-visible{
+  outline:3px solid var(--ember);outline-offset:2px}
+.dl{font:12.5px var(--mono);padding:9px 14px;border:1px solid var(--ink);background:var(--panel);
+  color:var(--ink);cursor:pointer;border-radius:3px}
+.dl:hover{background:var(--ink);color:var(--paper)}
+@media(max-width:640px){.mast h1{font-size:42px}.mast .strap{font-size:18px}}
 </style>
 </head>
 <body>
-<header><div class="wrap">
-  <h1><span>EmberWatch</span> — one fire record, 25 years, no sensor seams</h1>
-  <p class="tag">Harmonised MODIS and VIIRS active fire hotspots, for emergency responders, land managers and scientists.</p>
-  <div class="controls">
-    <label for="area">Area of interest</label>
-    <select id="area"></select>
-    <button id="dl-series" type="button">Download harmonised series (CSV)</button>
-  </div>
-</div></header>
-
 <div class="wrap">
-  <div id="synthetic-banner" class="banner" hidden></div>
 
-  <div class="cards" id="cards"></div>
+<header class="mast">
+  <div class="rule"></div>
+  <h1>Ember<em>Watch</em></h1>
+  <p class="strap">One fire record, twenty-five years, no sensor seams.</p>
+  <div class="dateline">
+    <span>Source <b>NASA FIRMS</b></span>
+    <span>Sensors <b>MODIS C6.1 · VIIRS 375 m</b></span>
+    <span>Record <b id="dl-span">2000 —</b></span>
+    <span>Built <b id="dl-built"></b></span>
+    <span>NASA Space Apps 2026 · London</span>
+  </div>
+  <div id="stamp-row"></div>
+</header>
 
-  <h2>Burning activity calendar</h2>
-  <p class="sub" id="cal-sub"></p>
+<section>
+  <div class="sec-head"><span class="no">01</span><h2>Choose your ground</h2>
+    <span class="aside">drag a box on the map, or set the coordinates</span></div>
+  <div class="map-tools" id="presets"></div>
+  <div class="mapbox" id="mapbox">
+    <svg id="map" viewBox="0 0 1120 560" role="img" aria-label="World map of fire activity; drag to select an area"></svg>
+    <div id="tip"></div>
+  </div>
+  <div class="map-foot">
+    <span id="selinfo"></span>
+    <span class="coords">
+      <label>W <input id="in-w" inputmode="decimal" aria-label="west longitude"></label>
+      <label>S <input id="in-s" inputmode="decimal" aria-label="south latitude"></label>
+      <label>E <input id="in-e" inputmode="decimal" aria-label="east longitude"></label>
+      <label>N <input id="in-n" inputmode="decimal" aria-label="north latitude"></label>
+      <button id="apply" type="button">apply</button>
+    </span>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><span class="no">02</span><h2>The reading</h2>
+    <span class="aside" id="read-aside"></span></div>
+  <div class="strip" id="strip"></div>
+</section>
+
+<section>
+  <div class="sec-head"><span class="no">03</span><h2>The record</h2>
+    <span class="aside">harmonised cell-days per month · square-root scale</span></div>
   <div class="panel">
     <div id="calendar"></div>
-    <div class="legend">
-      <span>Fewer</span><div class="ramp" id="ramp"></div><span>More</span>
-      <span style="margin-left:10px">cividis, colour-vision-deficiency safe · square-root scale</span>
+    <div class="legend"><span>fewer</span><div class="ramp" id="rampbar"></div><span>more</span>
+      <span style="margin-left:14px">cividis — stays readable with colour-vision deficiency</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><span class="no">04</span><h2>The seam test</h2>
+    <span class="aside">the project grading its own homework</span></div>
+  <p class="lede">A naive reading of the raw feed jumps when VIIRS joins the record, because the
+  <b>instrument</b> changed, not the burning. If harmonisation worked, that step should close.
+  It is measured, not asserted, and it recomputes live for whatever area you select.</p>
+  <div class="cols">
+    <div class="panel"><div id="seam"></div></div>
+    <div class="panel">
+      <table id="ablation"></table>
+      <p style="font-size:12.5px;color:var(--muted);margin:12px 0 0" id="abl-note"></p>
     </div>
   </div>
+</section>
 
-  <h2>The seam test</h2>
-  <p class="sub">If harmonisation worked, the artificial step where VIIRS joined the record in 2012 should
-  largely disappear. Grey is a naive splice of the two sensors; blue is the harmonised series.</p>
-  <div class="panel"><div id="seam"></div></div>
-
-  <h2>What each step contributes</h2>
-  <p class="sub">Size of the jump at the sensor change, same area, measured the same way each time.</p>
-  <div class="panel"><table id="ablation"></table></div>
-
-  <h2>How the record was harmonised</h2>
-  <div class="panel">
-    <table id="method"></table>
-    <p class="note" style="margin-top:14px" id="factor-note"></p>
-  </div>
-
-  <h2>What this does not tell you</h2>
+<section>
+  <div class="sec-head"><span class="no">05</span><h2>How the record was made</h2></div>
+  <ol class="steps">
+    <li><b>One schema</b><p>Both sensors collapse to a single table; MODIS 0–100 confidence maps onto the VIIRS low/nominal/high scale.</p></li>
+    <li><b>Grid, not pixels</b><p>Detections bin to a 0.25° grid and monthly windows. Raw point counts are never compared across sensors.</p></li>
+    <li><b>Cell-days</b><p>The unit is one cell, one day, any burning. Nearly invariant under pixel size and platform count.</p></li>
+    <li><b>A shared floor</b><p id="floor-note">Both sensors clip to the weakest fire MODIS reliably reports, from its own FRP distribution.</p></li>
+    <li><b>Calibrated on the overlap</b><p id="cal-note">Median VIIRS-to-MODIS ratios per cell and calendar month, fitted on the years both flew.</p></li>
+    <li><b>Then tested</b><p>The series is plotted across the join and the residual step is measured. Section 04 is that test.</p></li>
+  </ol>
+  <p class="margin-note" style="margin-top:20px">Treat two satellites like two log sources:
+  normalise to one schema, baseline the record, alert on deviation. The same discipline that
+  runs a security operations centre, pointed at wildfire.</p>
   <ul class="lim">
-    <li>Hotspot detections are <strong>not burned area</strong>. A single large fire and several small ones can produce the same count.</li>
-    <li>Cloud, smoke and overpass gaps cause <strong>missing observations, not absent fires</strong>.</li>
-    <li>Thermal sensors also see gas flares, volcanoes and industry, so some areas show a permanent false fire season.</li>
-    <li>Scaling factors fitted on few overlap years are weak. Every value carries the number of years behind it.</li>
+    <li><b>Detections are not burned area.</b> One huge fire and five small ones can count the same.</li>
+    <li><b>Cloud and overpass gaps hide fires</b> — a quiet pixel is not a certified absence of fire.</li>
+    <li><b>Industry burns too.</b> Gas flares and volcanoes give some cells a permanent false fire season.</li>
+    <li><b>Weak factors are labelled.</b> Every scaled value carries its calibration sample size.</li>
   </ul>
+</section>
 
-  <footer>
-    Data: <a href="https://firms.modaps.eosdis.nasa.gov/">NASA FIRMS</a> (MODIS Collection 6.1 from 2000-11-01,
-    VIIRS 375 m from 2012-01-20). Built for the NASA Space Apps Challenge 2026 challenge
-    <em>Harmonization of MODIS and VIIRS Hot Spots</em>.
-    <span id="generated"></span>
-  </footer>
+<footer>
+  <div>
+    Data <a href="https://firms.modaps.eosdis.nasa.gov/">NASA FIRMS</a> (MODIS Collection 6.1 · VIIRS 375 m S-NPP, NOAA-20, NOAA-21)
+    · Coastline <a href="https://www.naturalearthdata.com/">Natural Earth</a> via world-atlas
+    · <a href="https://github.com/krovix-1902/emberwatch">Source on GitHub</a><br>
+    <button class="dl" id="dl-csv" type="button" style="margin-top:10px">download harmonised series · csv</button>
+  </div>
+  <div style="text-align:right">
+    <span class="sig">Built over one weekend for Space Apps London<br>by Rohan “Krovix” Khatri</span>
+  </div>
+</footer>
+
 </div>
 
 <script>
-const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-// cividis: perceptually uniform and designed to stay readable with colour vision deficiency.
-const CIVIDIS = ["#00224e","#123570","#3b496c","#575d6d","#707173","#8a8678","#a59c74","#c3b369","#e1cc55","#fee838"];
+"use strict";
+/* ============ palette ============ */
+const CIVIDIS=["#00224e","#123570","#3b496c","#575d6d","#707173","#8a8678","#a59c74","#c3b369","#e1cc55","#fee838"];
+const h2r=h=>[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];
+function ramp(t){t=Math.max(0,Math.min(1,t));const x=t*(CIVIDIS.length-1),i=Math.floor(x),f=x-i;
+  if(i>=CIVIDIS.length-1)return CIVIDIS.at(-1);
+  const a=h2r(CIVIDIS[i]),b=h2r(CIVIDIS[i+1]);
+  return `rgb(${Math.round(a[0]+(b[0]-a[0])*f)},${Math.round(a[1]+(b[1]-a[1])*f)},${Math.round(a[2]+(b[2]-a[2])*f)})`;}
+const onRamp=t=>t>0.62?"#1c1a15":"#f6f3ec";
+const MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const el=id=>document.getElementById(id);
+const fmt=n=>Math.round(n).toLocaleString("en-GB");
 
-function lerp(a,b,t){return a+(b-a)*t}
-function hex2rgb(h){return [parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)]}
-function ramp(t){
-  t=Math.max(0,Math.min(1,t));
-  const x=t*(CIVIDIS.length-1), i=Math.floor(x), f=x-i;
-  if(i>=CIVIDIS.length-1) return CIVIDIS[CIVIDIS.length-1];
-  const a=hex2rgb(CIVIDIS[i]), b=hex2rgb(CIVIDIS[i+1]);
-  return `rgb(${Math.round(lerp(a[0],b[0],f))},${Math.round(lerp(a[1],b[1],f))},${Math.round(lerp(a[2],b[2],f))})`;
-}
-// Light text on the dark end of the ramp, dark text on the light end.
-function onColour(t){return t>0.62?"#15181d":"#ffffff"}
-function flagClass(f){
-  if(f==="extreme")return"f-extreme"; if(f==="elevated")return"f-elevated";
-  if(f==="unusually quiet")return"f-quiet"; return"f-normal";
-}
-const el=(id)=>document.getElementById(id);
+/* ============ state ============ */
+let G=null, LAND=null, MAN=null;
+let view={w:-180,s:-60,e:180,n:85};
+let sel=null;
+let cellTotals=null, maxCellTotal=0;
+const PAD=0.35;
 
-function renderCards(d){
-  const c=d.current, a=d.anomaly, t=d.trend;
-  const pctTxt=(v)=>v==null?"":` · ${v.toFixed(0)}th percentile`;
-  el("cards").innerHTML=`
-    <div class="card">
-      <h3>${MONTHS[c.month-1]} ${c.year} so far</h3>
-      <div class="big">${c.value.toLocaleString()}</div>
-      <p>cell-days in days 1 to ${c.days_elapsed}, against the same window in ${c.baseline_years} previous years
-      (median ${c.median!=null?c.median.toLocaleString():"n/a"}).</p>
-      <span class="flag ${flagClass(c.flag)}">${c.flag}${pctTxt(c.percentile)}</span>
-    </div>
-    <div class="card">
-      <h3>${MONTHS[d.last_complete.month-1]} ${d.last_complete.year}, last complete month</h3>
-      <div class="big">${a.value!=null?a.value.toLocaleString():"n/a"}</div>
-      <p>against ${a.baseline_years} previous ${MONTHS[d.last_complete.month-1]}s
-      (median ${a.median!=null?a.median.toLocaleString():"n/a"}${a.vs_median_pct!=null?`, ${a.vs_median_pct>0?"+":""}${a.vs_median_pct}%`:""}).</p>
-      <span class="flag ${flagClass(a.flag)}">${a.flag}${pctTxt(a.percentile)}</span>
-    </div>
-    <div class="card">
-      <h3>Long-term trend</h3>
-      <div class="big" style="text-transform:capitalize">${t.direction}</div>
-      <p>Seasonal Mann-Kendall over ${t.n_years} years. Theil-Sen slope
-      ${t.slope_per_decade>0?"+":""}${t.slope_per_decade} cell-days per decade,
-      p = ${t.p_value<0.001?"&lt;0.001":t.p_value}.</p>
-      <span class="flag ${t.significant?"f-elevated":"f-normal"}">
-        ${t.significant?"statistically significant":"not significant"}</span>
+/* ============ data decoding ============ */
+function miYM(mi){return [G.year0+Math.floor(mi/12), mi%12+1];}
+function cellBounds(c){const g=G.grid_deg;
+  return {w:c.x*g, s:c.y*g, e:(c.x+1)*g, n:(c.y+1)*g};}
+function intersects(a,b){return a.w<b.e&&a.e>b.w&&a.s<b.n&&a.n>b.s;}
+
+function aggregate(box){
+  const harm=new Float64Array(G.n_months), naive=new Float64Array(G.n_months);
+  const mtd={}; let cells=0;
+  for(const c of G.cells){
+    if(!intersects(cellBounds(c),box))continue;
+    cells++;
+    const v=c.v;
+    for(let i=0;i<v.length;i+=3){harm[v[i]]+=v[i+1];naive[v[i]]+=v[i+2];}
+    const m=G.mtd[c.y+":"+c.x];
+    if(m)for(let i=0;i<m.length;i+=2)mtd[m[i]]=(mtd[m[i]]||0)+m[i+1];
+  }
+  return {harm,naive,mtd,cells};
+}
+
+/* ============ stats (mirrors pipeline/stats.py) ============ */
+function erf(x){const s=x<0?-1:1;x=Math.abs(x);
+  const t=1/(1+0.3275911*x);
+  const y=1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-0.284496736)*t+0.254829592)*t*Math.exp(-x*x);
+  return s*y;}
+const phi=z=>0.5*(1+erf(z/Math.SQRT2));
+function quantile(sorted,q){if(!sorted.length)return 0;if(sorted.length===1)return sorted[0];
+  const p=q*(sorted.length-1),lo=Math.floor(p),hi=Math.ceil(p);
+  return lo===hi?sorted[lo]:sorted[lo]+(p-lo)*(sorted[hi]-sorted[lo]);}
+
+function seasonalMK(series){
+  const byMonth=new Map();const yearsSet=new Set();
+  for(const [key,v] of series){const [y,m]=key.split("-").map(Number);
+    yearsSet.add(y);
+    if(!byMonth.has(m))byMonth.set(m,[]);
+    byMonth.get(m).push([y,v]);}
+  let S=0,V=0;const slopes=[];
+  for(const pairs of byMonth.values()){
+    pairs.sort((a,b)=>a[0]-b[0]);
+    const n=pairs.length;if(n<3)continue;
+    for(let i=0;i<n-1;i++)for(let j=i+1;j<n;j++){
+      const d=pairs[j][1]-pairs[i][1];
+      S+=d>0?1:d<0?-1:0;
+      if(pairs[j][0]!==pairs[i][0])slopes.push(d/(pairs[j][0]-pairs[i][0]));}
+    const counts=new Map();
+    for(const [,v] of pairs)counts.set(v,(counts.get(v)||0)+1);
+    let ties=0;for(const t of counts.values())if(t>1)ties+=t*(t-1)*(2*t+5);
+    V+=(n*(n-1)*(2*n+5)-ties)/18;}
+  if(V<=0||!slopes.length)return{direction:"insufficient data",p:1,slope10:0,sig:false,nYears:yearsSet.size};
+  const z=S>0?(S-1)/Math.sqrt(V):S<0?(S+1)/Math.sqrt(V):0;
+  const p=2*(1-phi(Math.abs(z)));
+  slopes.sort((a,b)=>a-b);
+  return{direction:p>=0.05?"steady":z>0?"rising":"falling",p,
+         slope10:quantile(slopes,0.5)*10,sig:p<0.05,nYears:yearsSet.size};}
+
+function flagOf(pct){return pct>=98?"extreme":pct>=90?"elevated":pct<=10?"unusually quiet":"within normal range";}
+function percentileOf(history,value){
+  if(!history.length)return null;
+  return 100*history.filter(v=>v<value).length/history.length;}
+
+/* ============ derived readouts ============ */
+function readouts(agg){
+  const [ty,tm]=G.today.split("-").map(Number);
+  const lastMi=G.n_months-1;
+  const runningMi=(ty-G.year0)*12+(tm-1);
+  const completeEnd=runningMi>=0&&runningMi<=lastMi?runningMi-1:lastMi;
+
+  const series=new Map();
+  for(let mi=0;mi<=completeEnd;mi++){const [y,m]=miYM(mi);series.set(y+"-"+m,agg.harm[mi]);}
+
+  const [ay,am]=miYM(completeEnd);
+  const hist=[];for(const [key,v] of series){const [y,m]=key.split("-").map(Number);
+    if(m===am&&y!==ay)hist.push(v);}
+  hist.sort((a,b)=>a-b);
+  const aVal=agg.harm[completeEnd];
+  const aPct=percentileOf(hist,aVal);
+  const aMed=quantile(hist,0.5);
+  const allZeroA=aVal===0&&hist.length>0&&hist.at(-1)===0;
+
+  const mtdVal=agg.mtd[ty]||0;
+  const mtdHist=Object.entries(agg.mtd).filter(([y])=>+y!==ty).map(([,v])=>v).sort((a,b)=>a-b);
+  const mtdPct=percentileOf(mtdHist,mtdVal);
+  const mtdMed=quantile(mtdHist,0.5);
+  const allZeroM=mtdVal===0&&(!mtdHist.length||mtdHist.at(-1)===0);
+
+  const trend=seasonalMK(series);
+
+  const annual=(arr,ys)=>{const t=ys.map(y=>{let s=0;
+      for(let m=0;m<12;m++){const mi=(y-G.year0)*12+m;if(mi>=0&&mi<G.n_months)s+=arr[mi];}return s;})
+    .filter(v=>v>0);
+    return t.length?t.reduce((a,b)=>a+b,0)/t.length:0;};
+  const step=arr=>{const b=annual(arr,[2009,2010,2011]),a=annual(arr,[2013,2014,2015]);
+    return b?100*(a-b)/b:null;};
+
+  return {ay,am,aVal,aPct,aMed,aHistN:hist.length,allZeroA,
+          ty,tm,mtdVal,mtdPct,mtdMed,mtdHistN:mtdHist.length,allZeroM,
+          trend,stepNaive:step(agg.naive),stepHarm:step(agg.harm),completeEnd};
+}
+
+/* ============ map ============ */
+function fitAspect(b){
+  const want=2;let{w,s,e,n}=b;
+  const dw=e-w,dh=n-s;
+  if(dw/dh<want){const grow=(dh*want-dw)/2;w-=grow;e+=grow;}
+  else{const grow=(dw/want-dh)/2;s-=grow;n+=grow;}
+  if(w<-180){e+=-180-w;w=-180}if(e>180){w-=e-180;e=180}
+  if(s<-85){n+=-85-s;s=-85}if(n>85){s-=n-85;n=85}
+  return{w,s,e,n};}
+function padBox(b,f){const dw=(b.e-b.w)*f,dh=(b.n-b.s)*f;
+  return{w:b.w-dw,s:b.s-dh,e:b.e+dw,n:b.n+dh};}
+const px=lon=>(lon-view.w)/(view.e-view.w)*1120;
+const py=lat=>(view.n-lat)/(view.n-view.s)*560;
+const unx=x=>view.w+x/1120*(view.e-view.w);
+const uny=y=>view.n-y/560*(view.n-view.s);
+
+function drawMap(){
+  let s="";
+  s+='<g fill="#faf8f1" stroke="#8d8676" stroke-opacity="0.45" stroke-width="0.7">';
+  for(const ring of LAND){
+    let d="",first=true;
+    for(const p of ring){const x=px(p[0]),y=py(p[1]);
+      d+=(first?"M":"L")+x.toFixed(1)+" "+y.toFixed(1);first=false;}
+    s+=`<path d="${d}Z"/>`;}
+  s+="</g>";
+  s+='<g stroke="#b9b2a2" stroke-opacity="0.22" stroke-width="0.6">';
+  for(let lon=-150;lon<=150;lon+=30)s+=`<line x1="${px(lon).toFixed(1)}" y1="0" x2="${px(lon).toFixed(1)}" y2="560"/>`;
+  for(let lat=-60;lat<=60;lat+=30)s+=`<line x1="0" y1="${py(lat).toFixed(1)}" x2="1120" y2="${py(lat).toFixed(1)}"/>`;
+  s+="</g>";
+  s+="<g>";
+  for(let i=0;i<G.cells.length;i++){const c=G.cells[i],b=cellBounds(c);
+    if(!intersects(b,view))continue;
+    const t=Math.sqrt(cellTotals[i]/maxCellTotal);
+    const x=px(b.w),y=py(b.n),w=Math.max(1.5,px(b.e)-x),h=Math.max(1.5,py(b.s)-y);
+    s+=`<rect data-i="${i}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" fill="${ramp(t)}" fill-opacity="0.9"/>`;}
+  s+="</g>";
+  if(sel){const x=px(sel.w),y=py(sel.n);
+    s+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${(px(sel.e)-x).toFixed(1)}" height="${(py(sel.s)-y).toFixed(1)}"
+       fill="#b3421a" fill-opacity="0.08" stroke="#b3421a" stroke-width="2" stroke-dasharray="7 4"/>`;}
+  el("map").innerHTML=s;
+}
+
+function setSel(box,zoom){
+  sel={w:Math.min(box.w,box.e),e:Math.max(box.w,box.e),
+       s:Math.min(box.s,box.n),n:Math.max(box.s,box.n)};
+  if(zoom)view=fitAspect(padBox(sel,PAD));
+  ["w","s","e","n"].forEach(k=>el("in-"+k).value=sel[k].toFixed(2));
+  drawMap();render();
+}
+
+function wireMap(){
+  const svg=el("map");let drag=null;
+  const evPos=ev=>{const r=svg.getBoundingClientRect();
+    return [ (ev.clientX-r.left)/r.width*1120, (ev.clientY-r.top)/r.height*560 ];};
+  svg.addEventListener("pointerdown",ev=>{drag={p0:evPos(ev)};svg.setPointerCapture(ev.pointerId);});
+  svg.addEventListener("pointermove",ev=>{
+    const [x,y]=evPos(ev);
+    if(drag){drag.p1=[x,y];
+      let r=svg.querySelector("#dragrect");
+      if(!r){r=document.createElementNS("http://www.w3.org/2000/svg","rect");
+        r.id="dragrect";r.setAttribute("fill","#b3421a");r.setAttribute("fill-opacity","0.1");
+        r.setAttribute("stroke","#b3421a");r.setAttribute("stroke-width","1.5");svg.appendChild(r);}
+      r.setAttribute("x",Math.min(drag.p0[0],x));r.setAttribute("y",Math.min(drag.p0[1],y));
+      r.setAttribute("width",Math.abs(x-drag.p0[0]));r.setAttribute("height",Math.abs(y-drag.p0[1]));
+      return;}
+    const t=ev.target;
+    if(t.dataset&&t.dataset.i!==undefined){
+      const c=G.cells[+t.dataset.i],b=cellBounds(c);
+      const tip=el("tip");tip.style.display="block";
+      const box=el("mapbox").getBoundingClientRect();
+      tip.style.left=(ev.clientX-box.left)+"px";tip.style.top=(ev.clientY-box.top)+"px";
+      tip.textContent=`${b.s.toFixed(2)}° to ${b.n.toFixed(2)}°, ${b.w.toFixed(2)}° to ${b.e.toFixed(2)}° · ${fmt(cellTotals[+t.dataset.i])} cell-days since ${G.year0}`;
+    }else el("tip").style.display="none";});
+  const finish=()=>{
+    if(drag&&drag.p1&&Math.abs(drag.p1[0]-drag.p0[0])>6&&Math.abs(drag.p1[1]-drag.p0[1])>6){
+      setSel({w:unx(drag.p0[0]),e:unx(drag.p1[0]),n:uny(drag.p0[1]),s:uny(drag.p1[1])},false);
+      markPreset(null);}
+    drag=null;const r=svg.querySelector("#dragrect");if(r)r.remove();};
+  svg.addEventListener("pointerup",finish);
+  svg.addEventListener("pointercancel",finish);
+  svg.addEventListener("pointerleave",()=>{el("tip").style.display="none";});
+  el("apply").onclick=()=>{const v=k=>parseFloat(el("in-"+k).value);
+    if([v("w"),v("s"),v("e"),v("n")].some(isNaN))return;
+    setSel({w:v("w"),s:v("s"),e:v("e"),n:v("n")},true);markPreset(null);};
+}
+
+function markPreset(key){
+  document.querySelectorAll("#presets .chip[data-k]").forEach(c=>
+    c.setAttribute("aria-pressed",String(c.dataset.k===key)));}
+
+/* ============ renders ============ */
+function render(){
+  const agg=aggregate(sel);
+  el("selinfo").textContent=
+    `${sel.w.toFixed(2)}°, ${sel.s.toFixed(2)}° → ${sel.e.toFixed(2)}°, ${sel.n.toFixed(2)}° · ${agg.cells} grid cells`;
+  if(!agg.cells||agg.harm.every(v=>v===0)){
+    el("strip").innerHTML=`<div class="cell-stat" style="grid-column:1/-1">
+      <div class="k">no record</div><div class="hint">No satellite-detected burning in this box since ${G.year0}.
+      Drag a wider box, or try one of the presets above the map.</div></div>`;
+    el("calendar").innerHTML="";el("seam").innerHTML="";
+    el("read-aside").textContent="";return;}
+  const r=readouts(agg);
+  renderStrip(r);renderCalendar(agg,r);renderSeam(agg,r);
+  el("read-aside").textContent="recomputed in your browser for the selected area";
+  el("dl-csv").onclick=()=>downloadCSV(agg);
+}
+
+function badge(text,tone){
+  const cls=tone==="warn"?"b-warn":tone==="ok"?"b-ok":"b-mut";
+  return `<span class="badge ${cls}">${text}</span>`;}
+function flagBadge(flag){
+  return badge(flag,flag==="extreme"||flag==="elevated"?"warn":
+                    flag==="within normal range"?"ok":"mut");}
+
+function renderStrip(r){
+  const mtdBody=r.allZeroM||r.mtdPct===null?
+    `<div class="v">0</div><div class="d">No burning in this window, and none in any previous year either.</div>
+     ${badge("quiet season","mut")}`:
+    `<div class="v">${fmt(r.mtdVal)}<small> cell-days</small></div>
+     <div class="d">days 1–${G.mtd_days} vs the same window in ${r.mtdHistN} previous years · median ${fmt(r.mtdMed)}</div>
+     ${flagBadge(flagOf(r.mtdPct))}`;
+  const aBody=r.allZeroA||r.aPct===null?
+    `<div class="v">0</div><div class="d">Normally nothing burns here in ${MONTHS[r.am-1]}.</div>
+     ${badge("quiet season","mut")}`:
+    `<div class="v">${fmt(r.aVal)}<small> cell-days</small></div>
+     <div class="d">vs ${r.aHistN} previous ${MONTHS[r.am-1]}s · median ${fmt(r.aMed)}
+     ${r.aMed?`· ${r.aVal>=r.aMed?"+":""}${Math.round(100*(r.aVal-r.aMed)/r.aMed)}%`:""}</div>
+     ${flagBadge(flagOf(r.aPct))}`;
+  const t=r.trend;
+  el("strip").innerHTML=`
+    <div class="cell-stat"><div class="k">${MONTHS[r.tm-1]} ${r.ty} · month to date</div>${mtdBody}</div>
+    <div class="cell-stat"><div class="k">${MONTHS[r.am-1]} ${r.ay} · last complete month</div>${aBody}</div>
+    <div class="cell-stat"><div class="k">trend · ${t.nYears} years</div>
+      <div class="v" style="text-transform:capitalize">${t.direction}</div>
+      <div class="d">seasonal Mann–Kendall, Theil–Sen ${t.slope10>=0?"+":""}${t.slope10.toFixed(2)} cell-days/decade,
+      p ${t.p<0.001?"&lt; 0.001":"= "+t.p.toFixed(3)}</div>
+      ${t.sig?badge("statistically significant","warn"):badge("not significant","mut")}</div>`;
+}
+
+function renderCalendar(agg,r){
+  const y1=miYM(G.n_months-1)[0];
+  const years=[];for(let y=G.year0;y<=y1;y++)years.push(y);
+  let max=0;for(let mi=0;mi<G.n_months;mi++)if(agg.harm[mi]>max)max=agg.harm[mi];
+  const left=54,top=22,W=1000,cw=(W-left-8)/12,ch=18,H=top+years.length*ch+6;
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Calendar of burning activity, years by month">`;
+  s+=`<g font-family="IBM Plex Mono,monospace" font-size="10.5" fill="#6f6a5e">`;
+  MONTHS.forEach((m,i)=>s+=`<text x="${(left+i*cw+cw/2).toFixed(1)}" y="13" text-anchor="middle">${m}</text>`);
+  years.forEach((y,yi)=>s+=`<text x="${left-8}" y="${top+yi*ch+12.5}" text-anchor="end">${y}</text>`);
+  s+="</g>";
+  years.forEach((y,yi)=>{
+    for(let m=0;m<12;m++){
+      const mi=(y-G.year0)*12+m;if(mi>=G.n_months)break;
+      const v=agg.harm[mi],t=max?Math.sqrt(v/max):0;
+      const x=left+m*cw,yy=top+yi*ch;
+      const partial=mi>r.completeEnd?' stroke="#b3421a" stroke-width="1.2" stroke-dasharray="3 2"':"";
+      s+=`<g><title>${MONTHS[m]} ${y}: ${fmt(v)} cell-days${mi>r.completeEnd?" (month in progress)":""}</title>
+        <rect x="${(x+1).toFixed(1)}" y="${yy+1}" width="${(cw-2).toFixed(1)}" height="${ch-3}" fill="${v>0?ramp(t):"#edeade"}"${partial} tabindex="0"
+          aria-label="${MONTHS[m]} ${y}, ${fmt(v)} cell-days"/>`;
+      if(v>0&&cw>40)s+=`<text x="${(x+cw/2).toFixed(1)}" y="${yy+13}" text-anchor="middle" fill="${onRamp(t)}"
+          font-family="IBM Plex Mono,monospace" font-size="9.5">${Math.round(v)}</text>`;
+      s+="</g>";}});
+  el("calendar").innerHTML=s+"</svg>";
+  let grad="";for(let i=0;i<=20;i++)grad+=`${ramp(i/20)} ${i*5}%,`;
+  el("rampbar").style.background=`linear-gradient(90deg,${grad.slice(0,-1)})`;
+}
+
+function renderSeam(agg,r){
+  const y1=miYM(G.n_months-1)[0];
+  const years=[];for(let y=G.year0;y<=y1;y++)years.push(y);
+  const annual=arr=>years.map(y=>{let s=0;
+    for(let m=0;m<12;m++){const mi=(y-G.year0)*12+m;if(mi<G.n_months)s+=arr[mi];}
+    return{y,v:s};});
+  // Index both series to their own 2009-11 mean, so raw detections and
+  // harmonised cell-days never share an axis in different units, and the
+  // step at the join reads directly off the chart.
+  const base=pts=>{const bb=pts.filter(p=>p.y>=2009&&p.y<=2011&&p.v>0);
+    return bb.length?bb.reduce((a,p)=>a+p.v,0)/bb.length:0;};
+  const na0=annual(agg.naive),ha0=annual(agg.harm);
+  const nb=base(na0),hb=base(ha0);
+  const indexed=nb>0&&hb>0;
+  const na=indexed?na0.map(p=>({y:p.y,v:p.v/nb*100})):na0;
+  const ha=indexed?ha0.map(p=>({y:p.y,v:p.v/hb*100})):ha0;
+  const W=560,H=280,l=52,rr=14,t=18,b=34;
+  const max=Math.max(...na.map(p=>p.v),...ha.map(p=>p.v))*1.08||1;
+  const X=y=>l+(y-years[0])/(years.at(-1)-years[0])*(W-l-rr);
+  const Y=v=>H-b-(v/max)*(H-t-b);
+  const path=pts=>pts.map((p,i)=>`${i?"L":"M"}${X(p.y).toFixed(1)} ${Y(p.v).toFixed(1)}`).join("");
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Annual totals, naive splice against harmonised">`;
+  s+=`<g font-family="IBM Plex Mono,monospace" font-size="10" fill="#6f6a5e">`;
+  for(let i=0;i<=3;i++){const v=max*i/3,y=Y(v);
+    s+=`<line x1="${l}" x2="${W-rr}" y1="${y.toFixed(1)}" y2="${y.toFixed(1)}" stroke="#d9d3c5"/>
+        <text x="${l-7}" y="${(y+3.5).toFixed(1)}" text-anchor="end">${fmt(v)}</text>`;}
+  years.forEach(y=>{if(y%5===0)s+=`<text x="${X(y).toFixed(1)}" y="${H-14}" text-anchor="middle">${y}</text>`;});
+  s+="</g>";
+  if(indexed)s+=`<line x1="${l}" x2="${W-rr}" y1="${Y(100).toFixed(1)}" y2="${Y(100).toFixed(1)}" stroke="#8d8676" stroke-width="1" stroke-dasharray="2 3"/>`;
+  s+=`<line x1="${X(2012).toFixed(1)}" x2="${X(2012).toFixed(1)}" y1="${t}" y2="${H-b}" stroke="#b3421a" stroke-width="1.4" stroke-dasharray="5 4"/>
+      <text x="${(X(2012)+6).toFixed(1)}" y="${t+11}" fill="#b3421a" font-family="IBM Plex Mono,monospace" font-size="10.5">VIIRS joins</text>
+      <path d="${path(na)}" fill="none" stroke="#9a9485" stroke-opacity="0.75" stroke-width="2"/>
+      <path d="${path(ha)}" fill="none" stroke="#1c1a15" stroke-width="2.2"/>`;
+  el("seam").innerHTML=s+"</svg>"+
+    `<div class="legend">
+      <span style="border-top:2px solid #9a9485;width:22px"></span><span>raw detections, all sensors${r.stepNaive!==null?` · step ${r.stepNaive>0?"+":""}${r.stepNaive.toFixed(0)}%`:""}</span>
+      <span style="border-top:2.5px solid #1c1a15;width:22px;margin-left:12px"></span><span><b>harmonised cell-days</b>${r.stepHarm!==null?` · step ${r.stepHarm>0?"+":""}${r.stepHarm.toFixed(0)}%`:""}</span>
+      ${indexed?'<span style="margin-left:12px">annual totals, each indexed · 2009–11 average = 100</span>':""}
     </div>`;
 }
 
-function renderCalendar(d){
-  const rows=d.calendar, W=1000, left=52, top=24, cw=(W-left-12)/12, ch=19;
-  const H=top+rows.length*ch+10;
-  let max=0; rows.forEach(r=>r.months.forEach(v=>{if(v>max)max=v}));
-  const scale=(v)=>max>0?Math.sqrt(v/max):0;   // sqrt: fire counts are heavily skewed
-  let s=`<svg class="cal" viewBox="0 0 ${W} ${H}" width="100%" role="img"
-    aria-label="Burning activity calendar, years by month, ${d.label}">`;
-  MONTHS.forEach((m,i)=>{s+=`<text x="${left+i*cw+cw/2}" y="15" text-anchor="middle">${m}</text>`});
-  rows.forEach((r,ri)=>{
-    const y=top+ri*ch;
-    s+=`<text x="${left-9}" y="${y+13}" text-anchor="end">${r.year}</text>`;
-    r.months.forEach((v,mi)=>{
-      const t=scale(v), x=left+mi*cw;
-      const lbl=`${MONTHS[mi]} ${r.year}: ${v.toLocaleString()} cell-days`;
-      s+=`<g><title>${lbl}</title>
-        <rect x="${x+1}" y="${y+1}" width="${cw-2}" height="${ch-3}" rx="2"
-          fill="${v>0?ramp(t):"#eef1f5"}" tabindex="0" aria-label="${lbl}"></rect>`;
-      if(cw>44&&v>0)s+=`<text x="${x+cw/2}" y="${y+13}" text-anchor="middle"
-          fill="${onColour(t)}" style="font-size:10px">${Math.round(v)}</text>`;
-      s+=`</g>`;
-    });
-  });
-  el("calendar").innerHTML=s+"</svg>";
-  let g=""; for(let i=0;i<=100;i+=2)g+=`${ramp(i/100)} ${i}%,`;
-  el("ramp").style.background=`linear-gradient(90deg,${g.slice(0,-1)})`;
-  el("cal-sub").textContent=
-    `${d.label}. ${d.note}. Harmonised cell-days per month, ${rows[0].year} to ${rows[rows.length-1].year}. `+
-    `Baseline for anomalies: ${d.baseline[0]} to ${d.baseline[1]}.`;
-}
-
-function annual(cal){return cal.map(r=>({year:r.year,total:r.months.reduce((a,b)=>a+b,0)}))}
-
-function renderSeam(d){
-  const raw=annual(d.raw_calendar), harm=annual(d.calendar);
-  const W=1000,H=250,l=58,r=16,t=16,b=34;
-  const years=harm.map(p=>p.year);
-  const max=Math.max(...raw.map(p=>p.total),...harm.map(p=>p.total))*1.08||1;
-  const X=(y)=>l+(y-years[0])/(years[years.length-1]-years[0])*(W-l-r);
-  const Y=(v)=>H-b-(v/max)*(H-t-b);
-  const path=(pts)=>pts.map((p,i)=>`${i?"L":"M"}${X(p.year).toFixed(1)} ${Y(p.total).toFixed(1)}`).join("");
-  let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img"
-    aria-label="Annual totals, naive splice against harmonised, with the 2012 sensor change marked">`;
-  for(let i=0;i<=4;i++){const v=max*i/4,y=Y(v);
-    s+=`<line x1="${l}" x2="${W-r}" y1="${y}" y2="${y}" stroke="#e8ecf2"/>
-        <text x="${l-8}" y="${y+4}" text-anchor="end" fill="#5b6472" style="font-size:11px">${Math.round(v)}</text>`}
-  years.forEach(y=>{if(y%5===0)s+=`<text x="${X(y)}" y="${H-12}" text-anchor="middle"
-    fill="#5b6472" style="font-size:11px">${y}</text>`});
-  s+=`<line x1="${X(2012)}" x2="${X(2012)}" y1="${t}" y2="${H-b}" stroke="#8c2d12"
-       stroke-width="1.5" stroke-dasharray="5 4"/>
-      <text x="${X(2012)+7}" y="${t+13}" fill="#8c2d12" style="font-size:11.5px;font-weight:650">VIIRS joins</text>
-      <path d="${path(raw)}" fill="none" stroke="#9aa3b0" stroke-width="2"/>
-      <path d="${path(harm)}" fill="none" stroke="#1a4fa0" stroke-width="2.5"/>`;
-  s+=`<g style="font-size:12px"><rect x="${W-r-216}" y="${t}" width="206" height="42" fill="#fff"
-       stroke="#d8dde5" rx="6"/>
-      <line x1="${W-r-204}" x2="${W-r-184}" y1="${t+15}" y2="${t+15}" stroke="#9aa3b0" stroke-width="2"/>
-      <text x="${W-r-178}" y="${t+19}" fill="#5b6472">Naive splice (${d.seam.raw.step_pct>0?"+":""}${d.seam.raw.step_pct}%)</text>
-      <line x1="${W-r-204}" x2="${W-r-184}" y1="${t+32}" y2="${t+32}" stroke="#1a4fa0" stroke-width="2.5"/>
-      <text x="${W-r-178}" y="${t+36}" fill="#15181d">Harmonised (${d.seam.harmonised.step_pct>0?"+":""}${d.seam.harmonised.step_pct}%)</text></g>`;
-  el("seam").innerHTML=s+"</svg>";
-}
-
-function renderAblation(d){
-  let s=`<thead><tr><th>Variant</th><th class="num">Step at the sensor change</th></tr></thead><tbody>`;
-  d.ablation.forEach((a,i)=>{
-    const last=i===d.ablation.length-1;
-    s+=`<tr><td${last?' style="font-weight:650"':""}>${a.variant}</td>
-      <td class="num"${last?' style="font-weight:650"':""}>${a.step_pct>0?"+":""}${a.step_pct}%</td></tr>`});
+function renderAblation(){
+  if(!MAN.ablation)return;
+  let s=`<thead><tr><th>Variant</th><th class="num">Step at sensor change</th></tr></thead><tbody>`;
+  MAN.ablation.forEach((a,i)=>{
+    s+=`<tr${i===MAN.ablation.length-1?' class="hero"':""}><td>${a.variant}</td>
+        <td class="num">${a.step_pct>0?"+":""}${a.step_pct}%</td></tr>`;});
   el("ablation").innerHTML=s+"</tbody>";
+  el("abl-note").textContent=
+    `Reference ablation on ${MAN.ablation_area||"the primary area"}: the same seam measured after each stage. `+
+    `The shared floor does the heavy lifting; the per-cell calibration closes what is left.`;
 }
 
-function renderMethod(d,man){
-  const cov=man.coverage.map(c=>
-    `<tr><td>${c.sensor}</td><td>${c.first_day} to ${c.last_day}</td>
-     <td class="num">${c.detections.toLocaleString()}</td><td class="num">${c.platforms}</td></tr>`).join("");
-  el("method").innerHTML=
-    `<thead><tr><th>Sensor</th><th>Record</th><th class="num">Detections</th><th class="num">Platforms</th></tr></thead>
-     <tbody>${cov}</tbody>`;
-  const f=Object.entries(d.factors).map(([k,v])=>
-    `<span class="pill">${k}: ${v.months.toLocaleString()} months, median ×${v.median_factor}</span>`).join(" ");
-  el("factor-note").innerHTML=
-    `Detections are binned to a <strong>${man.grid_deg}°</strong> grid and reduced to <strong>cell-days</strong>,
-     one cell on one day with any active burning, so pixel size and platform count stop mattering.
-     Both sensors are clipped to a shared floor of <strong>${man.frp_floor_mw} MW</strong> fire radiative power,
-     derived from the MODIS distribution. The MODIS era is then scaled to VIIRS-equivalent using median ratios
-     fitted on the <strong>${man.overlap_years[0]} to ${man.overlap_years[1]}</strong> overlap. Factors used: ${f}`;
-}
-
-async function load(key,man){
-  const d=await (await fetch(`data/${key}.json`)).json();
-  renderCards(d); renderCalendar(d); renderSeam(d); renderAblation(d); renderMethod(d,man);
-  el("dl-series").onclick=()=>{
-    const rows=[["year","month","harmonised_cell_days"]];
-    d.calendar.forEach(r=>r.months.forEach((v,i)=>rows.push([r.year,i+1,v])));
+function downloadCSV(agg){
+  const rows=[["year","month","harmonised_cell_days","naive_splice_cell_days"]];
+  for(let mi=0;mi<G.n_months;mi++){const [y,m]=miYM(mi);
+    rows.push([y,m,agg.harm[mi].toFixed(1),agg.naive[mi].toFixed(1)]);}
+  try{
     const blob=new Blob([rows.map(r=>r.join(",")).join("\n")],{type:"text/csv"});
-    const a=document.createElement("a");
-    a.href=URL.createObjectURL(blob); a.download=`emberwatch_${key}_harmonised.csv`; a.click();
-  };
+    const a=document.createElement("a");a.href=URL.createObjectURL(blob);
+    a.download="emberwatch_harmonised.csv";a.click();
+  }catch(e){/* sandboxed preview blocks downloads */}
 }
 
+/* ============ boot ============ */
 (async function(){
-  const man=await (await fetch("data/manifest.json")).json();
-  el("generated").textContent=` Built ${man.generated} from ${man.detections.toLocaleString()} detections.`;
-  if(man.synthetic){
-    const b=el("synthetic-banner"); b.hidden=false;
-    b.innerHTML="<strong>Synthetic data.</strong> These figures come from a generated dataset that mimics "+
-      "the FIRMS record, used to build and validate the pipeline. Not science. Replace with the real archive before judging.";
-  }
-  const sel=el("area");
-  sel.innerHTML=man.areas.map(a=>`<option value="${a.key}">${a.label}</option>`).join("");
-  sel.onchange=()=>load(sel.value,man);
-  await load(man.areas[0].key,man);
+  const [man,g,land]=await Promise.all([
+    fetch("data/manifest.json").then(r=>r.json()),
+    fetch("data/grid.json").then(r=>r.json()),
+    fetch("data/land.json").then(r=>r.json())]);
+  MAN=man;G=g;LAND=land;
+  el("dl-built").textContent=man.generated;
+  el("dl-span").textContent=`${g.year0} — ${g.today.slice(0,7)}`;
+  if(man.synthetic)el("stamp-row").innerHTML=
+    `<span class="stamp">synthetic data · pipeline validation build</span>`;
+  el("floor-note").textContent=
+    `Both sensors clip to ${man.frp_floor_mw} MW fire radiative power, the weakest fire MODIS reliably reports, derived from its own distribution.`;
+  el("cal-note").textContent=
+    `Median VIIRS-to-MODIS ratios per cell and calendar month, fitted on the ${man.overlap_years[0]}–${man.overlap_years[1]} overlap.`;
+
+  cellTotals=new Float64Array(G.cells.length);
+  G.cells.forEach((c,i)=>{let s=0;for(let j=1;j<c.v.length;j+=3)s+=c.v[j];
+    cellTotals[i]=s;if(s>maxCellTotal)maxCellTotal=s;});
+
+  el("presets").innerHTML=man.areas.map(a=>
+    `<button class="chip" data-k="${a.key}" aria-pressed="false" type="button">${a.label}</button>`).join("")+
+    `<span class="sp"></span><button class="chip" id="world" type="button">world view</button>`;
+  man.areas.forEach(a=>{
+    document.querySelector(`[data-k="${a.key}"]`).onclick=()=>{
+      setSel({w:a.bbox[0],s:a.bbox[1],e:a.bbox[2],n:a.bbox[3]},true);markPreset(a.key);};});
+  el("world").onclick=()=>{view={w:-180,s:-60,e:180,n:85};drawMap();};
+
+  renderAblation();wireMap();
+  const a0=man.areas[0];
+  setSel({w:a0.bbox[0],s:a0.bbox[1],e:a0.bbox[2],n:a0.bbox[3]},true);markPreset(a0.key);
 })();
 </script>
 </body>
