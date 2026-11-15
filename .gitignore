@@ -3,3 +3,7 @@ data/out/
 __pycache__/
 *.pyc
 .cache/
+
+node_modules/
+package.json
+package-lock.json
